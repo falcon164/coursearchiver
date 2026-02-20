@@ -1,4 +1,4 @@
-I will give you the current process.php code below. Please update it as per your instruction so that I can replace the current code completely with what you give me - <?php
+<?php
 // This file is part of
 //
 // Moodle is free software: you can redistribute it and/or modify
