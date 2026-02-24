@@ -16,7 +16,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if (!$hassiteconfig) {
+// Allow access if user is a site admin OR has the S3 sync log read capability.
+$hascapability = has_capability('tool/coursearchiver:views3synclog', context_system::instance());
+
+if (!$hassiteconfig && !$hascapability) {
     return;
 }
 
@@ -31,77 +34,88 @@ $ADMIN->add(
     )
 );
 
-// -------------------------------------------------------------------------
-// Main Course Archiver tool
-// -------------------------------------------------------------------------
-$ADMIN->add(
-    'toolcoursearchiver',
-    new admin_externalpage(
-        'toolcoursearchiver_main',
-        get_string('coursearchiver', 'tool_coursearchiver'),
-        new moodle_url('/admin/tool/coursearchiver/index.php'),
+if ($hassiteconfig) {
+    // -------------------------------------------------------------------------
+    // Main Course Archiver tool
+    // -------------------------------------------------------------------------
+    $ADMIN->add(
+        'toolcoursearchiver',
+        new admin_externalpage(
+            'toolcoursearchiver_main',
+            get_string('coursearchiver', 'tool_coursearchiver'),
+            new moodle_url('/admin/tool/coursearchiver/index.php'),
+            'tool/coursearchiver:use'
+        )
+    );
+
+    // -------------------------------------------------------------------------
+    // Archive Run Report page
+    // -------------------------------------------------------------------------
+    $ADMIN->add(
+        'toolcoursearchiver',
+        new admin_externalpage(
+            'toolcoursearchiverruns',
+            'Archive Run Report',
+            new moodle_url('/admin/tool/coursearchiver/runreport.php'),
+            'moodle/site:config'
+        )
+    );
+
+    // -------------------------------------------------------------------------
+    // Settings page
+    // -------------------------------------------------------------------------
+    $settings = new admin_settingpage(
+        'tool_coursearchiver',
+        get_string('coursearchiver_settings', 'tool_coursearchiver'),
         'tool/coursearchiver:use'
-    )
-);
+    );
 
-// -------------------------------------------------------------------------
-// Archive Run Report page
-// -------------------------------------------------------------------------
-$ADMIN->add(
-    'toolcoursearchiver',
-    new admin_externalpage(
-        'toolcoursearchiverruns',
-        'Archive Run Report',
-        new moodle_url('/admin/tool/coursearchiver/runreport.php'),
-        'moodle/site:config'
-    )
-);
+    // Root path.
+    $settings->add(
+        new admin_setting_configtext(
+            'tool_coursearchiver/coursearchiverrootpath',
+            get_string('coursearchiverrootpath', 'tool_coursearchiver'),
+            get_string('coursearchiverrootpath_help', 'tool_coursearchiver'),
+            $CFG->dataroot
+        )
+    );
 
-// -------------------------------------------------------------------------
-// Settings page
-// -------------------------------------------------------------------------
-$settings = new admin_settingpage(
-    'tool_coursearchiver',
-    get_string('coursearchiver_settings', 'tool_coursearchiver'),
-    'tool/coursearchiver:use'
-);
+    // Archive folder.
+    $settings->add(
+        new admin_setting_configtext(
+            'tool_coursearchiver/coursearchiverpath',
+            get_string('coursearchiverpath', 'tool_coursearchiver'),
+            get_string('coursearchiverpath_help', 'tool_coursearchiver'),
+            'CourseArchives'
+        )
+    );
 
-// Root path.
-$settings->add(
-    new admin_setting_configtext(
-        'tool_coursearchiver/coursearchiverrootpath',
-        get_string('coursearchiverrootpath', 'tool_coursearchiver'),
-        get_string('coursearchiverrootpath_help', 'tool_coursearchiver'),
-        $CFG->dataroot
-    )
-);
+    // Archive deletion delay in days.
+    $settings->add(new admin_setting_configtext(
+        'tool_coursearchiver/delaydeletesetting',
+        get_string('archivedeletesetting', 'tool_coursearchiver'),
+        get_string('archivedeletesetting_help', 'tool_coursearchiver'),
+        7,
+        PARAM_INT
+    ));
 
-// Archive folder.
-$settings->add(
-    new admin_setting_configtext(
-        'tool_coursearchiver/coursearchiverpath',
-        get_string('coursearchiverpath', 'tool_coursearchiver'),
-        get_string('coursearchiverpath_help', 'tool_coursearchiver'),
-        'CourseArchives'
-    )
-);
+    // Attach settings page.
+    $ADMIN->add('toolcoursearchiver', $settings);
 
-// Attach settings page.
-$ADMIN->add('toolcoursearchiver', $settings);
-
-//Attach S3 Sync Page
-$ADMIN->add(
-    'toolcoursearchiver',
-    new admin_externalpage(
-        'toolcoursearchiver_s3sync',
-        'Sync Archives to S3',
-        new moodle_url('/admin/tool/coursearchiver/s3sync.php'),
-        'moodle/site:config'
-    )
-);
+    // Attach S3 Sync Page.
+    $ADMIN->add(
+        'toolcoursearchiver',
+        new admin_externalpage(
+            'toolcoursearchiver_s3sync',
+            'Sync Archives to S3',
+            new moodle_url('/admin/tool/coursearchiver/s3sync.php'),
+            'moodle/site:config'
+        )
+    );
+}
 
 // --------------------------------------------------------------------
-// S3 Sync Log Page
+// S3 Sync Log Page – accessible to users with the views3synclog capability.
 // --------------------------------------------------------------------
 $ADMIN->add(
     'toolcoursearchiver',
@@ -109,29 +123,17 @@ $ADMIN->add(
         'toolcoursearchiver_s3synclog',
         get_string('s3synclog', 'tool_coursearchiver'),
         new moodle_url('/admin/tool/coursearchiver/s3synclog.php'),
-        'tool/coursearchiver:use'
+        'tool/coursearchiver:views3synclog'
     )
 );
 
-// Archive deletion delay in days.
-$settings->add(new admin_setting_configtext(
-    'tool_coursearchiver/delaydeletesetting',
-    get_string('archivedeletesetting', 'tool_coursearchiver'),
-    get_string('archivedeletesetting_help', 'tool_coursearchiver'),
-    7,
-    PARAM_INT
-));
-
-$ADMIN->add('courses', new admin_category(
-    'toolcoursearchiver',
-    get_string('pluginname', 'tool_coursearchiver')
-));
-
-$ADMIN->add('toolcoursearchiver', new admin_externalpage(
-    'toolcoursearchiver_archivelist',
-    'Course Archives',
-    new moodle_url('/admin/tool/coursearchiver/archivelist.php'),
-    'tool/coursearchiver:use'
-));
+if ($hassiteconfig) {
+    $ADMIN->add('toolcoursearchiver', new admin_externalpage(
+        'toolcoursearchiver_archivelist',
+        'Course Archives',
+        new moodle_url('/admin/tool/coursearchiver/archivelist.php'),
+        'tool/coursearchiver:use'
+    ));
+}
 
 
