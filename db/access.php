@@ -31,4 +31,13 @@ $capabilities = [
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
     ],
+    // Ability to view the S3 sync log page.
+    'tool/coursearchiver:views3synclog' => [
+        'riskbitmask'  => 0,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 ];

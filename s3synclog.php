@@ -6,7 +6,7 @@ require_login();
 admin_externalpage_setup('toolcoursearchiver_s3synclog');
 
 $context = context_system::instance();
-require_capability('tool/coursearchiver:use', $context);
+require_capability('tool/coursearchiver:views3synclog', $context);
 
 global $DB, $OUTPUT, $PAGE;
 
