@@ -5,6 +5,20 @@ The courses are stored with Moodle's backup file extension ".mbz".  These files 
 ## Install
 copy the coursearchiver folder into the admin/tool folder.
 
+## Updating / Syncing
+
+To update your local Moodle installation after a new pull request has been merged:
+
+1. Navigate to your local copy of this plugin:
+   ```
+   cd /path/to/moodle/admin/tool/coursearchiver
+   ```
+2. Pull the latest changes from the repository:
+   ```
+   git pull origin main
+   ```
+3. Log in to your Moodle site as an administrator and navigate to **Site Administration → Notifications** to run any pending database upgrades.
+
 ## Settings
 #### Folder path
 A folder created within the moodledata folder.  The tool will create this folder, however it is recommended that the folder be created outside the moodledata folder, and a shortcut be placed in the moodledata folder.
