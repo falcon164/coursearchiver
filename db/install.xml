@@ -97,6 +97,30 @@
             </INDEXES>
         </TABLE>
 
+        <!-- ===================================================== -->
+        <!-- NEW: S3 file-level audit (Added by Mujahidul Islam) -->
+        <!-- ===================================================== -->
+
+        <TABLE NAME="tool_coursearchiver_s3files" COMMENT="S3 file-level sync audit">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="term" TYPE="char" LENGTH="100" NOTNULL="true"/>
+                <FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true"/>
+                <FIELD NAME="localpath" TYPE="text" LENGTH="big" NOTNULL="false"/>
+                <FIELD NAME="s3key" TYPE="text" LENGTH="big" NOTNULL="false"/>
+                <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="true"/>
+                <FIELD NAME="error" TYPE="text" LENGTH="big" NOTNULL="false"/>
+                <FIELD NAME="timeuploaded" TYPE="int" LENGTH="10" NOTNULL="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="idx_term" UNIQUE="false" FIELDS="term"/>
+                <INDEX NAME="idx_status" UNIQUE="false" FIELDS="status"/>
+            </INDEXES>
+        </TABLE>
+
     </TABLES>
 
 </XMLDB>
