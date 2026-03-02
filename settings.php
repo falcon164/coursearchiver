@@ -57,7 +57,7 @@ if ($hassiteconfig) {
             'toolcoursearchiverruns',
             'Archive Run Report',
             new moodle_url('/admin/tool/coursearchiver/runreport.php'),
-            'moodle/site:config'
+            'tool/coursearchiver:use'
         )
     );
 
@@ -109,7 +109,7 @@ if ($hassiteconfig) {
             'toolcoursearchiver_s3sync',
             'Sync Archives to S3',
             new moodle_url('/admin/tool/coursearchiver/s3sync.php'),
-            'moodle/site:config'
+            'tool/coursearchiver:use'
         )
     );
 }

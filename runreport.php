@@ -2,7 +2,11 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
+require_login();
 admin_externalpage_setup('toolcoursearchiverruns');
+
+$context = context_system::instance();
+require_capability('tool/coursearchiver:use', $context);
 
 $PAGE->set_title('Archive Run Report');
 $PAGE->set_heading('Archive Run Report');
