@@ -6,7 +6,7 @@ require_login();
 admin_externalpage_setup('toolcoursearchiver_s3sync');
 
 $context = context_system::instance();
-require_capability('moodle/site:config', $context);
+require_capability('tool/coursearchiver:use', $context);
 
 global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
