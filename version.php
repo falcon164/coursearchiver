@@ -29,7 +29,7 @@ $plugin->component = 'tool_coursearchiver';
 
 // Internal upgrade version (monotonically increasing).
 // NOTE: This is NOT a release date; do not interpret as calendar month.
-$plugin->version   = 2025121002;
+$plugin->version   = 2025121003;
 
 // Human-readable release information shown in Site administration.
 $plugin->release   = '2025.12';

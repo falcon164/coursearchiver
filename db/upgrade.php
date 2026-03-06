@@ -66,6 +66,19 @@ function xmldb_tool_coursearchiver_upgrade(int $oldversion): bool {
         upgrade_plugin_savepoint(true, 2025121001, 'tool', 'coursearchiver');
     }
 
+    // ---------------------------------------------------------------------
+    // 2025121003 - Ensure views3synclog capability is registered
+    // ---------------------------------------------------------------------
+    if ($oldversion < 2025121003) {
+
+        // Re-read db/access.php to register any capabilities that may have
+        // been missed (e.g. views3synclog added in a previous version without
+        // a corresponding upgrade savepoint).
+        update_capabilities('tool_coursearchiver');
+
+        upgrade_plugin_savepoint(true, 2025121003, 'tool', 'coursearchiver');
+    }
+
     return true;
 }
 
