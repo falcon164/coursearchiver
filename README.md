@@ -1,5 +1,5 @@
 # Course Archiver
-This tool is used to search for courses, notify the course owners, and mass hide or archive (backup and remove) courses.
+This tool is a fork of Moodle's Course Archiver Plugub. It is used to search for courses, notify the course owners, and mass hide or archive (backup and remove) courses. It has to new features search by term and sync the course backup files to AWS S3 storage.  
 The courses are stored with Moodle's backup file extension ".mbz".  These files can then be manually found in the user defined folder and can be restored using Moodle's built in restore feature.
 
 ## Install
